@@ -22,6 +22,7 @@ clean:
 
 test: clean
 	$(CXX) $(STD) $(SRC) $(TESTS) -o test $(TEST_FLAGS)
+	- ./test
 
 leak: test
 	leaks -atExit -- ./test

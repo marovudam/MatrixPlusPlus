@@ -3,25 +3,28 @@
 Matrix::Matrix() : rows_(0), cols_(0), matrix_(nullptr) {}
 
 Matrix::Matrix(int rows, int cols) {
-  if (rows <= 0 || cols <= 0)
+  if (rows < 0 || cols < 0)
     throw std::invalid_argument("Negative matrix dimentions");
   rows_ = rows;
   cols_ = cols;
-  matrix_ = new double *[rows_];
-  int i = 0;
-  try {
-    for (i = 0; i < rows; i++) {
-      matrix_[i] = new double[cols_]{};
+  if (rows_ == 0 || cols == 0) {
+    matrix_ = nullptr;
+  } else {
+    matrix_ = new double *[rows_];
+    int i = 0;
+    try {
+      for (i = 0; i < rows; i++) {
+        matrix_[i] = new double[cols_]{};
+      }
+    } catch (...) {
+      for (int j = 0; j < i; j++) delete[] matrix_[j];
+      delete[] matrix_;
+      throw;
     }
-  } catch (...) {
-    for (int j = 0; j < i; j++) delete[] matrix_[j];
-    delete[] matrix_;
-    throw;
   }
 }
 
-Matrix::Matrix(const Matrix &other)
-    : Matrix(other.rows_, other.cols_) {
+Matrix::Matrix(const Matrix &other) : Matrix(other.rows_, other.cols_) {
   for (int i = 0; i < other.rows_; i++) {
     for (int j = 0; j < other.cols_; j++) matrix_[i][j] = other.matrix_[i][j];
   }
@@ -29,11 +32,7 @@ Matrix::Matrix(const Matrix &other)
 
 Matrix &Matrix::operator=(const Matrix &other) {
   if (this != &other) {
-    Matrix temp_m(other.rows_, other.cols_);
-    for (int i = 0; i < other.rows_; i++) {
-      for (int j = 0; j < other.cols_; j++)
-        temp_m.matrix_[i][j] = other.matrix_[i][j];
-    }
+    Matrix temp_m(other);
     *this = std::move(temp_m);
   }
   return *this;
@@ -70,10 +69,9 @@ int Matrix::get_rows() { return rows_; }
 int Matrix::get_cols() { return cols_; }
 
 void Matrix::CopyNeeded(const Matrix &other) noexcept {
-  int rows = std::min(rows_, other.rows_);
-  int cols = std::min(cols_, other.cols_);
-  for (int i = 0; i < rows; i++) {
-    for (int j = 0; j < cols; j++) matrix_[i][j] = other.matrix_[i][j];
+  for (int i = 0; i < std::min(rows_, other.rows_); i++) {
+    for (int j = 0; j < std::min(cols_, other.cols_); j++)
+      matrix_[i][j] = other.matrix_[i][j];
   }
 }
 
@@ -108,9 +106,7 @@ bool Matrix::EqMatrix(const Matrix &other) noexcept {
   return false;
 }
 
-bool Matrix::operator==(const Matrix &other) {
-  return this->EqMatrix(other);
-}
+bool Matrix::operator==(const Matrix &other) { return EqMatrix(other); }
 
 void Matrix::SumMatrix(const Matrix &other) {
   if (rows_ != other.rows_ || cols_ != other.cols_)
@@ -189,7 +185,7 @@ Matrix Matrix::operator*(const Matrix &other) {
 
 Matrix &Matrix::operator*=(const Matrix &other) {
   Matrix result = *this * other;
-  *this = result;
+  *this = std::move(result);
   return *this;
 }
 
@@ -199,7 +195,7 @@ Matrix Matrix::Transpose() {
   Matrix result(cols_, rows_);
   for (int i = 0; i < rows_; i++) {
     for (int j = 0; j < cols_; j++) {
-      result(j, i) = matrix_[i][j];
+      result.matrix_[j][i] = matrix_[i][j];
     }
   }
   return result;
@@ -265,8 +261,7 @@ Matrix Matrix::InverseMatrix() {
   double determinant = Determinant();
   if (determinant < kPrecision)
     throw std::invalid_argument("Determinant equals zero");
-  Matrix result(Transpose().CalcComplements() * (1 / determinant));
-  return result;
+  return Transpose().CalcComplements() * (1 / determinant);
 }
 
 double &Matrix::operator()(int i, int j) {

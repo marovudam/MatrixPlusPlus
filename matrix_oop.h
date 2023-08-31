@@ -8,6 +8,7 @@
 
 class Matrix {
  public:
+  // checnge for epsilon in numeric_limits
   const double kPrecision = 0.0000001;
 
   Matrix();
@@ -40,6 +41,7 @@ class Matrix {
   Matrix &operator*=(const Matrix &other);
   Matrix Transpose();
   double Determinant();
+  // need to check this one (1*1 matrix)
   Matrix CalcComplements();
   Matrix InverseMatrix();
 
