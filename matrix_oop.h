@@ -3,13 +3,13 @@
 
 #include <algorithm>
 #include <cmath>
+#include <limits>
 #include <stdexcept>
 #include <utility>
 
 class Matrix {
  public:
-  // checnge for epsilon in numeric_limits
-  const double kPrecision = 0.0000001;
+  const double kPrecision = std::numeric_limits<double>::epsilon();
 
   Matrix();
   Matrix(int rows, int cols);
