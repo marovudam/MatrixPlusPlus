@@ -12,7 +12,7 @@ class Matrix {
   const double kPrecision = std::numeric_limits<double>::epsilon();
 
   Matrix();
-  Matrix(int rows, int cols);
+  explicit Matrix(int rows, int cols);
   Matrix(const Matrix &other);
   Matrix(Matrix &&other) noexcept;
   Matrix &operator=(const Matrix &other);
