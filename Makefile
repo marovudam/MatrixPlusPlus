@@ -36,3 +36,4 @@ coverage:
 	- ./test
 	lcov -c --directory . -o ./coverage.info --no-external
 	genhtml coverage.info --output-directory=res
+	open res/index.html

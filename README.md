@@ -1,8 +1,29 @@
 # MatrixPlusPlus
-First C++ project
+_My first C++ project_
 
 Implementation of Matrix library with C++ object-oriented approach.
-List of functions:
+- C++17 version
+- Compiler used: g++
+- Gtest library used for testing
+- Coverage check with gcovr & lcov
+- C++ Google Style Guide followed *(or so i think)*
+
+### Makefile targets
+- `make all` and `make matrix_oop.a` builds static library `matrix_oop.a`
+- `make clean` removes anything produced by any target
+- `make test` builds and runs tests
+- `make coverage` forms and opens html coverage report
+- `make leak` checks compiled tests for possible memory leaks (`leaks` utility used). _**In some cases Gtest exception assertions (`ASSERT_THROW`) may leak by 16 bytes. This is the common thing and I do not know how to fix it**_ 
+- `make style` formats code to satisfy Google Style. You probably do not not need this one
+
+### List of private fields
+| Field | Type | Description |
+|-|-|-|
+| `rows_` | integer | Number of rows (equal or greater than zero) |
+| `cols_` | integer | Number of colums (equal or greater than zero) |
+| `double **matrix_` | Nested double array | `rows_ * cols` matrix |
+
+### List of methods
 | Method | Descrition |
 |--------|------------|
 | `Matrix()` | Non-parametrized constructor. Creates `0*0` matrix|
@@ -35,10 +56,3 @@ List of functions:
 | `double Determinant()` | Calculates matrix determinant (Gaussian elimination is used; No-recursion method) |
 | `Matrix CalcComplements()` | Calculates cofactor matrix |
 | `Matrix InverseMatrix()` | Calculates invertible matrix |
-
-List of private fields
-| Field | Type | Description|
-|-|-|-|
-| `rows_` | integer | Number of rows (equal or greater than zero) |
-| `cols_` | integer | Number of colums (equal or greater than zero) |
-| `double **matrix_` | Nested double array | `rows_ * cols` matrix |
