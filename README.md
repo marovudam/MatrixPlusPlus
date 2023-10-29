@@ -1,4 +1,6 @@
 # MatrixPlusPlus
+_There is a [TODO](TODO.md) to the project_
+
 _My first C++ project_
 
 Implementation of Matrix library with C++ object-oriented approach.
