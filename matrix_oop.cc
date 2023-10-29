@@ -64,9 +64,9 @@ void Matrix::ClearMatrix() {
   cols_ = 0;
 }
 
-int Matrix::get_rows() { return rows_; }
+int Matrix::get_rows() const { return rows_; }
 
-int Matrix::get_cols() { return cols_; }
+int Matrix::get_cols() const { return cols_; }
 
 void Matrix::CopyNeeded(const Matrix &other) noexcept {
   for (int i = 0; i < std::min(rows_, other.rows_); i++) {
@@ -93,7 +93,7 @@ void Matrix::set_cols(int cols) {
   }
 }
 
-bool Matrix::EqMatrix(const Matrix &other) noexcept {
+bool Matrix::EqMatrix(const Matrix &other) const noexcept {
   if (rows_ == other.rows_ && cols_ == other.cols_) {
     for (int i = 0; i < rows_; i++) {
       for (int j = 0; j < cols_; j++) {
@@ -106,7 +106,7 @@ bool Matrix::EqMatrix(const Matrix &other) noexcept {
   return false;
 }
 
-bool Matrix::operator==(const Matrix &other) { return EqMatrix(other); }
+bool Matrix::operator==(const Matrix &other) const { return EqMatrix(other); }
 
 void Matrix::SumMatrix(const Matrix &other) {
   if (rows_ != other.rows_ || cols_ != other.cols_)
@@ -124,13 +124,13 @@ void Matrix::SubMatrix(const Matrix &other) {
   }
 }
 
-Matrix Matrix::operator+(const Matrix &other) {
+Matrix Matrix::operator+(const Matrix &other) const {
   Matrix ans(other);
   ans.SumMatrix(*this);
   return ans;
 }
 
-Matrix Matrix::operator-(const Matrix &other) {
+Matrix Matrix::operator-(const Matrix &other) const {
   Matrix ans(*this);
   ans.SubMatrix(other);
   return ans;
@@ -157,7 +157,7 @@ Matrix &Matrix::operator*=(const double num) {
   return *this;
 }
 
-Matrix Matrix::operator*(const double num) {
+Matrix Matrix::operator*(const double num) const {
   Matrix ans(*this);
   ans.MulNumber(num);
   return ans;
@@ -169,7 +169,7 @@ Matrix operator*(const double num, const Matrix m) {
   return result;
 }
 
-Matrix Matrix::operator*(const Matrix &other) {
+Matrix Matrix::operator*(const Matrix &other) const {
   if (cols_ != other.rows_)
     throw std::invalid_argument("Wrong matrix dimensions");
   Matrix result(rows_, other.cols_);
@@ -191,7 +191,7 @@ Matrix &Matrix::operator*=(const Matrix &other) {
 
 void Matrix::MulMatrix(const Matrix &other) { *this *= other; }
 
-Matrix Matrix::Transpose() {
+Matrix Matrix::Transpose() const {
   Matrix result(cols_, rows_);
   for (int i = 0; i < rows_; i++) {
     for (int j = 0; j < cols_; j++) {
@@ -201,7 +201,7 @@ Matrix Matrix::Transpose() {
   return result;
 }
 
-double Matrix::Determinant() {
+double Matrix::Determinant() const {
   if (rows_ != cols_) throw std::invalid_argument("Matrix must be square");
   Matrix triangle(*this);
   double determinant = 1.0;
@@ -230,7 +230,7 @@ double Matrix::Determinant() {
   return determinant * rows_change;
 }
 
-Matrix Matrix::CalcComplements() {
+Matrix Matrix::CalcComplements() const {
   if (rows_ != cols_) throw std::invalid_argument("Matrix must be square");
   Matrix result(rows_, cols_);
   if (rows_ == 1) {
@@ -244,7 +244,7 @@ Matrix Matrix::CalcComplements() {
   return result;
 }
 
-Matrix Matrix::Minor(int i, int j) {
+Matrix Matrix::Minor(int i, int j) const {
   Matrix result(rows_ - 1, cols_ - 1);
   for (int k = 0, m = 0; k < rows_, m < result.rows_; k++, m++) {
     if (k == i) k++;
@@ -256,7 +256,7 @@ Matrix Matrix::Minor(int i, int j) {
   return result;
 }
 
-Matrix Matrix::InverseMatrix() {
+Matrix Matrix::InverseMatrix() const {
   if (rows_ != cols_) throw std::invalid_argument("Matrix must be square");
   double determinant = Determinant();
   if (determinant < kPrecision)
@@ -265,6 +265,12 @@ Matrix Matrix::InverseMatrix() {
 }
 
 double &Matrix::operator()(int i, int j) {
+  if (i > rows_ || j > cols_ || i < 0 || j < 0)
+    throw std::invalid_argument("Index out of borders");
+  return matrix_[i][j];
+}
+
+const double &Matrix::operator()(int i, int j) const {
   if (i > rows_ || j > cols_ || i < 0 || j < 0)
     throw std::invalid_argument("Index out of borders");
   return matrix_[i][j];
