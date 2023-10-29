@@ -6,6 +6,8 @@ SRC=matrix_oop.cc
 OBJS=matrix_oop.o
 TESTS=matrix_oop_tests.cc
 
+.PHONY: matrix_oop.a test
+
 all: matrix_oop.a
 
 style:
