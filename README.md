@@ -24,7 +24,7 @@ Implementation of Matrix library with C++ object-oriented approach.
 | `double **matrix_` | Nested double array | `rows_ * cols` matrix |
 
 ### List of methods
-| Method | Descrition |
+| Method | Description |
 |--------|------------|
 | `Matrix()` | Non-parametrized constructor. Creates `0*0` matrix|
 | `Matrix(int rows, int cols)` | Parametrized constructor. Creates Matrix with `rows*cols` dimentions |
